@@ -93,7 +93,7 @@ step_program (stack, memory, input, output) =
                           if get_location memory == 0 then
                             (map_head skip_to_matching_bracket stack, memory, input, output)
                           else
-                            (push_stack stack, memory, input, output)
+                            (advance_stack $ push_stack stack, memory, input, output)
                         EndLoop    ->
                           if get_location memory == 0 then
                             (advance_stack $ map_head skip_to_matching_bracket $ pop_stack stack, memory, input, output)
@@ -109,7 +109,7 @@ run_program :: Program -> Stream -> Either Error Stream
 run_program program input =
   let
     maxlen = 100000
-    initial_state = ([program], ([],[]), input, [])
+    initial_state = ([program], ([],[0]), input, [])
     states = iterate step_program initial_state
     not_done_states = takeWhile ( not.program_done ) $ take maxlen states
   in
