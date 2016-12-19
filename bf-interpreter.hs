@@ -25,6 +25,7 @@ increment_pointer (p, x:xs) = (x:p, xs)
 -- <
 decrement_pointer :: Memory -> Memory
 decrement_pointer ([], xs) = ([], 0:xs)
+decrement_pointer ([n], xs) = ([], n:xs)
 decrement_pointer m = (swap.increment_pointer.swap) m
 
 -- .
@@ -104,6 +105,10 @@ step_program (stack, memory, input, output) =
 program_done :: State -> Bool
 program_done ([[]], _, _, _) = True
 program_done _ = False
+
+get_memory_stream :: State -> Stream
+get_memory_stream (_,mem,_,_) =
+  (reverse $ fst mem) ++ (snd mem)
 
 run_program :: Program -> Stream -> Either Error Stream
 run_program program input =
